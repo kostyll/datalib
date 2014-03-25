@@ -35,18 +35,25 @@ def print_hex_data(data,offset=0,length=-1):
 	buffer = StringIO('')
 	for symbol in data[offset:length]:
 		if byteindex % 16 == 0:
-			buffer.write('\n')
-			addr = hex(byteindex)
-			buffer.write(
-				"{0:8s} {1} | {2} [{3}]".format(
-					addr,symbols,string.encode('utf-8'),options)
-				)
-			addr = symbols = string = options = ""
-			byteindex = byteindex+16
+			if byteindex != 0:
+				addr = hex(byteindex-16)
+				buffer.write(
+					"\n{0:8s} {1:52s} | {2:18s} [{3}]".format(
+						addr,symbols,string.encode('ascii','replace'),options)
+					)
+				addr = symbols = string = options = ""
+			# byteindex = byteindex+16
 		if byteindex % 8 == 0:
-			symbols.write('  ')
-		symbols.write(hex(ord(symbol)).split('x')[1])
-		string += symbol
+			symbols +='  '
+		symbols+=hex(ord(symbol)).split('x')[1]+' '
+		string += symbol.encode('ascii',"ignore")
+		byteindex += 1
+	if symbols != "":
+		addr = hex(byteindex-len(string))
+		buffer.write(
+			"\n{0:8s} {1:52s} | {2:18s} [{3}]".format(
+				addr,symbols,string.encode('ascii','replace'),options)
+			)
 	buffer.read()
 	print (buffer.buf)
 
