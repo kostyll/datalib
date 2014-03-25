@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 from StringIO import StringIO
 from io import BytesIO
-from datalib improt IOError
+# from datalib import IOError
 
 global_id = -1
 
@@ -36,9 +36,19 @@ def print_hex_data(data,offset=0,length=-1):
 	for symbol in data[offset:length]:
 		if byteindex % 16 == 0:
 			buffer.write('\n')
+			addr = hex(byteindex)
+			buffer.write(
+				"{0:8s} {1} | {2} [{3}]".format(
+					addr,symbols,string.encode('utf-8'),options)
+				)
+			addr = symbols = string = options = ""
+			byteindex = byteindex+16
 		if byteindex % 8 == 0:
-			symbols
+			symbols.write('  ')
+		symbols.write(hex(ord(symbol)).split('x')[1])
 		string += symbol
+	buffer.read()
+	print (buffer.buf)
 
 
 

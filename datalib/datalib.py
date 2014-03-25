@@ -52,7 +52,7 @@ class Data(object):
 	def detectformat(self):
 		raise Exception('Abstract method call!')
 
-	def print(self):
+	def print_(self):
 		raise Exception('Abstract method call!')
 
 	def __str__(self):
