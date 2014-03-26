@@ -1,6 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
-from utils.utils import get_id, clear_id
+from utils.utils import (
+		get_id, 
+		clear_id, 
+		print_hex_data,
+		get_frequency,
+	)
 
 DATA_TYPES_ENUM = ['text','archive','image','audio','video','ciphered','raw','fs']
 
@@ -33,6 +38,7 @@ class Data(object):
 	def __init__(self):
 		self.data = None
 		self.debug = 0
+		self.modified = True
 
 	def analize(self):
 		raise Exception('Abstract method call!')
@@ -69,6 +75,24 @@ class Data(object):
 
 	def convert(self,format):
 		raise Exception('Abstract method call!')
+
+	def __hex__(self):
+		return print_hex_data(self.data,pprint = False)
+
+	def __len__(self):
+		return len(self.data)
+
+	def as_hex(self):
+		return self.__hex__()
+
+	def as_text(self):
+		pass
+
+	def spectr(self, show = False):
+		"""
+		Discover the symbol frequency
+		"""
+		return get_frequency(self.data, pprint = False)
 
 
 __author__ = "Andriy Vasyltsiv"

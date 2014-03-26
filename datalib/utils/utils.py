@@ -2,6 +2,10 @@
 from __future__ import unicode_literals
 from StringIO import StringIO
 from io import BytesIO
+import pprint
+
+pp = pprint.PrettyPrinter(indent=4)
+
 # from datalib import IOError
 
 global_id = -1
@@ -16,7 +20,7 @@ def clear_id():
 	global_id = -1
 
 
-def print_hex_data(data,offset=0,length=-1):
+def print_hex_data(data,offset=0,length=-1, pprint=True):
 	try:
 		length = len(data)
 	except Exception, e:
@@ -56,8 +60,16 @@ def print_hex_data(data,offset=0,length=-1):
 			)
 	buffer.read()
 	print (buffer.buf)
+	return buffer.buf
 
 
+def get_frequency(data,offset=0,length=-1, pprint=True):
+	result = {}
+	for symbol in data[offset:len(data) if length == -1 else length]:
+		result.update({ord(symbol):result.get(ord(symbol,0))+1})
+	if pprint:
+		pp.pprint(result)
+	return result
 
 
 
