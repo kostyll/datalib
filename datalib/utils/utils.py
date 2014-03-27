@@ -3,6 +3,10 @@ from __future__ import unicode_literals
 from StringIO import StringIO
 from io import BytesIO
 import pprint
+import string
+import numpy as np
+# import pyplot as pl
+import matplotlib.pylab as plt
 
 pp = pprint.PrettyPrinter(indent=4)
 
@@ -66,10 +70,28 @@ def print_hex_data(data,offset=0,length=-1, pprint=True):
 def get_frequency(data,offset=0,length=-1, pprint=True):
 	result = {}
 	for symbol in data[offset:len(data) if length == -1 else length]:
-		result.update({ord(symbol):result.get(ord(symbol,0))+1})
+		result.update({ord(symbol):result.get(ord(symbol),0)+1})
 	if pprint:
 		pp.pprint(result)
 	return result
+
+def is_printable(string_):
+	for sym in string_:
+		if not sym in string.printable:
+			return False
+	return True
+
+def extract_text(string_):
+	result = ""
+	for sym in string_:
+		if sym in string.printable:
+			result += sym
+	return result 
+
+def show_spectr(spectr):
+	plt.bar(range(len(spectr)), spectr.values(), align='center')
+	plt.xticks(range(len(spectr)), spectr.keys())
+	plt.show()
 
 
 

@@ -5,6 +5,8 @@ from utils.utils import (
 		clear_id, 
 		print_hex_data,
 		get_frequency,
+		is_printable,
+		extract_text,
 	)
 
 DATA_TYPES_ENUM = ['text','archive','image','audio','video','ciphered','raw','fs']
@@ -36,20 +38,34 @@ class Data(object):
 	"""
 
 	def __init__(self):
-		self.data = None
-		self.debug = 0
-		self.modified = True
+		self._data = None
+		self._debug = 0
+		self._modified = True
+		self._is_text = None
+		self._size = -1
+		self._spectr = {}
+
+	def get_data(self):
+		return self._data
+
+	def size(self):
+		if self.modified():
+			self._size = len(self._data)
+		return self._size
+
+	def modified(self):
+		return self._modified
 
 	def analize(self):
 		raise Exception('Abstract method call!')
 
-	def _speedanalize(self):
+	def __speedanalize(self):
 		raise Exception('Abstract method call!')
 
-	def _analize(self):
+	def __analize(self):
 		raise Exception('Abstract method call!')
 
-	def _deepanalize(self):
+	def __deepanalize(self):
 		raise Exception('Abstract method call!')
 
 	def detecttype(self):
@@ -77,22 +93,39 @@ class Data(object):
 		raise Exception('Abstract method call!')
 
 	def __hex__(self):
-		return print_hex_data(self.data,pprint = False)
+		return print_hex_data(self._data,pprint = False)
 
 	def __len__(self):
-		return len(self.data)
+		return len(self._data)
 
 	def as_hex(self):
 		return self.__hex__()
 
+	def is_text(self):
+		if self.modified():
+			self._is_text = is_printable(self._data)
+		return self._is_text
+
 	def as_text(self):
-		pass
+		return extract_text(self._data)
 
 	def spectr(self, show = False):
 		"""
 		Discover the symbol frequency
 		"""
-		return get_frequency(self.data, pprint = False)
+		if (self._spectr is None) or (self.modified()):
+			self._spectr = get_frequency(self._data, pprint = False)
+		return self._spectr
+
+
+class UnknownFile(Data):
+
+	def __init__(self,filename):
+		Data.__init__(self)
+		self._data = open(filename,'rt').read()
+		if not self.is_text():
+			self.data = open(filename,'rb').read()
+
 
 
 __author__ = "Andriy Vasyltsiv"
